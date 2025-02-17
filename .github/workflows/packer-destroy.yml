@@ -32,4 +32,5 @@ jobs:
 
       # Step 5: Run Terraform destroy to remove infrastructure
       - name: Destroy Terraform infrastructure
-        run: terraform destroy -auto-approve
+        run: terraform destroy -auto-approve -parallelism=10
+
