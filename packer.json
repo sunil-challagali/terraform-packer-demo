@@ -3,7 +3,7 @@
     {
       "type": "amazon-ebs",
       "region": "ap-south-1",
-      "source_ami": "ami-00bb6a80f01f03502",  // Replace this with a valid source AMI
+      "source_ami": "ami-00bb6a80f01f03502",
       "instance_type": "t2.micro",
       "ssh_username": "ubuntu",
       "ami_name": "my-custom-ami-{{timestamp}}"
