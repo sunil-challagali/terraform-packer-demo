@@ -7,12 +7,19 @@ variable "ami_id" {
   description = "The AMI ID of the custom AMI created by Packer"
   type        = string
 }
-
+data "aws_ami" "latest" {
+  most_recent = true
+  owners      = ["self"]
+  filter {
+    name   = "name"
+    values = ["my-custom-ami*"]
+  }
+}
 resource "aws_instance" "packer" {
   ami           = var.ami_id  # Use the AMI ID from the variable
   instance_type = "t2.micro"
   key_name      = "dockernew"  # Replace with your SSH key name
-
+  depends_on = [aws_ami.custom_ami]
   tags = {
     Name = "MyInstance"
   }
