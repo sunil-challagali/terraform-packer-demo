@@ -18,7 +18,7 @@ jobs:
         with:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws_region: "us-west-2"
+          aws_region: "ap-south-1"
 
       # Step 3: Install Terraform
       - name: Set up Terraform
@@ -40,6 +40,12 @@ jobs:
       # Step 6: Set up Terraform
       - name: Initialize Terraform
         run: terraform init
+      # Step 7: Set up Terraform Validate
+      - name: Validate Terraform
+        run: terraform validate
+      # Step 8: Plan Terraform
+      - name: Plan Terraform
+        run: terraform plan
 
       # Step 7: Apply Terraform configuration (This will provision AWS resources)
       - name: Apply Terraform configuration
