@@ -1,0 +1,46 @@
+name: Packer and Terraform CI/CD deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code from GitHub
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up AWS CLI
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: "us-west-2"
+
+      # Step 3: Install Terraform
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: "1.4.0"  # Specify the Terraform version you want
+
+      # Step 4: Install Packer
+      - name: Install Packer
+        run: |
+          curl -LO https://releases.hashicorp.com/packer/1.8.4/packer_1.8.4_linux_amd64.zip
+          unzip packer_1.8.4_linux_amd64.zip
+          sudo mv packer /usr/local/bin/
+
+      # Step 5: Run Packer to build the AMI
+      - name: Build AMI with Packer
+        run: packer build packer.json
+
+      # Step 6: Set up Terraform
+      - name: Initialize Terraform
+        run: terraform init
+
+      # Step 7: Apply Terraform configuration (This will provision AWS resources)
+      - name: Apply Terraform configuration
+        run: terraform apply -auto-approve
