@@ -2,10 +2,10 @@
   "builders": [
     {
       "type": "amazon-ebs",
-      "region": "us-west-2",
-      "source_ami": "ami-xxxxxxxx",  # Replace with a valid source AMI
+      "region": "ap-south-1",
+      "source_ami": "ami-00bb6a80f01f03502",  # Replace with a valid source AMI
       "instance_type": "t2.micro",
-      "ssh_username": "ec2-user",
+      "ssh_username": "ubuntu",
       "ami_name": "my-custom-ami-{{timestamp}}"
     }
   ],
