@@ -15,4 +15,10 @@
       "script": "scripts/setup.sh"
     }
   ]
+  "post-processors": [
+    {
+      "type": "manifest",
+      "output": "packer-manifest.json"
+    }
+  ]
 }
