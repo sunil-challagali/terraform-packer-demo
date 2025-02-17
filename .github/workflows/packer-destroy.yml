@@ -1,0 +1,35 @@
+name: Destroy AWS Infrastructure
+
+on:
+  workflow_dispatch:  # This allows manual triggering of the destroy workflow from GitHub Actions UI
+
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code from GitHub
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up AWS CLI
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: "ap-south-1"
+
+      # Step 3: Install Terraform
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: "1.4.0"  # Specify the Terraform version you want
+
+      # Step 4: Initialize Terraform
+      - name: Initialize Terraform
+        run: terraform init
+
+      # Step 5: Run Terraform destroy to remove infrastructure
+      - name: Destroy Terraform infrastructure
+        run: terraform destroy -auto-approve
