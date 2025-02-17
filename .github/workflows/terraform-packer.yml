@@ -1,4 +1,4 @@
-name: Packer and Terraform CI/CD deploy
+name: Packer and Terraform CI/CD
 
 on:
   workflow_dispatch:
@@ -18,7 +18,7 @@ jobs:
         with:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws_region: "ap-south-1"
+          aws_region: "us-west-2"
 
       # Step 3: Install Terraform
       - name: Set up Terraform
@@ -37,16 +37,23 @@ jobs:
       - name: Build AMI with Packer
         run: packer build packer.json
 
-      # Step 6: Set up Terraform
+      # Step 6: Extract the AMI ID from the Packer build (this can be parsed from the output or manifest)
+      - name: Extract AMI ID
+        id: ami_id
+        run: |
+          AMI_ID=$(jq -r '.builds[0].artifact_id' packer-manifest.json | sed 's/.*ami-/ami-/')
+          echo "AMI_ID=${AMI_ID}" >> $GITHUB_ENV
+
+      # Step 7: Initialize Terraform
       - name: Initialize Terraform
         run: terraform init
-      # Step 7: Set up Terraform Validate
+      # Step 8: Validate Terraform
       - name: Validate Terraform
         run: terraform validate
-      # Step 8: Plan Terraform
+      # Step 9: Plan Terraform
       - name: Plan Terraform
         run: terraform plan
 
-      # Step 7: Apply Terraform configuration (This will provision AWS resources)
+      # Step 10: Apply Terraform configuration
       - name: Apply Terraform configuration
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve -var="ami_id=${{ env.AMI_ID }}"
